@@ -42,24 +42,31 @@ const currentDate = new Date();
 
 function getMonthDays(year, month) {
   const firstWeekDayIndex = new Date(year, month - 1, 1).getDay();
-  const lastWeekDayIndex = new Date(year, month - 1, getLastDayOfMonth(year, month)).getDay();
+  const lastWeekDayIndex = new Date(
+    year,
+    month - 1,
+    getLastDayOfMonth(year, month)
+  ).getDay();
 
   const calendarMonthDays = [];
   if (firstWeekDayIndex > 0) {
     const lastPrevMonthDate = getLastDayOfMonth(year, month - 1);
     const prevMonthIndex = month - 2;
     for (let i = 0; i < firstWeekDayIndex - 1; i++) {
-      calendarMonthDays.push(getDateObj(year, prevMonthIndex, lastPrevMonthDate - i));
+      calendarMonthDays.push(
+        getDateObj(year, prevMonthIndex, lastPrevMonthDate - i)
+      );
     }
   }
   // month days
   const lastMonthDay = getLastDayOfMonth(year, month);
+  const nexMonthDaysAmount = 35 - lastMonthDay - calendarMonthDays.length;
   const striclyMonthDays = [];
-  for (let i = 0; i < lastMonthDay; i++) {
-    striclyMonthDays.push(getDateObj(year, month - 1, 1+i));
+  for (let i = 0; i < lastMonthDay + nexMonthDaysAmount; i++) {
+    striclyMonthDays.push(getDateObj(year, month - 1, 1 + i));
   }
   console.log(calendarMonthDays);
-  console.log('Month days: ', striclyMonthDays);
-  console.log(lastWeekDayIndex)
+  console.log("Month days: ", calendarMonthDays.concat(striclyMonthDays));
+  return calendarMonthDays.concat(striclyMonthDays);
 }
-getMonthDays(2024, 3);
+getMonthDays(2024, 4);
