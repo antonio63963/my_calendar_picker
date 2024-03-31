@@ -1,7 +1,14 @@
+const monthForward = document.querySelector(".calendar__forward");
+const monthBack = document.querySelector(".calendar__back");
+const calendarTitle = document.querySelector(".calendar__title");
+
 const currentDate = new Date().getDate();
 let currentMonth = new Date().getMonth();
 let currentYear = new Date().getUTCFullYear();
-console.log(currentYear, currentMonth, currentDate)
+let selectedMonth = currentMonth;
+let selectedYear = currentYear;
+
+console.log(currentYear, currentMonth, currentDate);
 
 const monthes = [
   "Январь",
@@ -59,21 +66,45 @@ function getMonthDays(year, monthIndex) {
 function insertDates(year, month) {
   const datesRowElement = document.querySelector(".calendar__dates-row");
 
-  function createDateElement(date) {
+  function createDateElement(dateObject) {
     const dateContainer = document.createElement("div");
     dateContainer.classList.add("date-container");
     const dateBg = document.createElement("div");
     const dateValue = document.createElement("span");
-    dateValue.textContent = date.date;
+    dateValue.textContent = dateObject.date;
     dateBg.classList.add("date-container__bg");
+    if (
+      dateObject.year == currentYear &&
+      dateObject.monthIndex == currentMonth &&
+      dateObject.date == currentDate
+    ) {
+      dateBg.classList.add("date-container__current-date");
+    }
     dateBg.appendChild(dateValue);
     dateContainer.appendChild(dateBg);
     return dateContainer;
   }
 
+  datesRowElement.textContent = "";
   getMonthDays(year, month).forEach((date) => {
     datesRowElement.appendChild(createDateElement(date));
   });
+  calendarTitle.textContent = monthes[month];
 }
 
-insertDates(currentYear, currentMonth);
+// Handlers
+
+function onForwardMonth() {
+  selectedMonth++;
+  insertDates(selectedYear, selectedMonth);
+}
+function onBackMonth() {
+  if (selectedMonth == currentMonth) return;
+  selectedMonth--;
+  insertDates(selectedYear, selectedMonth);
+}
+
+monthForward.addEventListener("click", onForwardMonth);
+monthBack.addEventListener("click", onBackMonth);
+
+insertDates(selectedYear, selectedMonth);
