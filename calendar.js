@@ -1,3 +1,8 @@
+const currentDate = new Date().getDate();
+let currentMonth = new Date().getMonth();
+let currentYear = new Date().getUTCFullYear();
+console.log(currentYear, currentMonth, currentDate)
+
 const monthes = [
   "Январь",
   "Февраль",
@@ -19,28 +24,22 @@ function getLastDayOfMonth(year, month) {
   return date.getDate();
 }
 
-// function getWeekDay(date) {
-//   return weekDays[date.getDay()];
-// }
-
 function getDateObj(year, monthIndex, dateDay) {
   const date = new Date(year, monthIndex, dateDay);
   return {
     date: date.getDate(),
     monthIndex: date.getMonth(),
-    year: date.getFullYear(),
+    year: date.getUTCFullYear(),
     weekDayIndex: date.getDay(),
   };
 }
 
-const currentDate = new Date();
-
-function getMonthDays(year, month) {
-  const firstWeekDayIndex = new Date(year, month - 1, 1).getDay();
+function getMonthDays(year, monthIndex) {
+  const firstWeekDayIndex = new Date(year, monthIndex, 1).getDay();
   const calendarMonthDays = [];
   if (firstWeekDayIndex > 0) {
-    const lastPrevMonthDate = getLastDayOfMonth(year, month - 1);
-    const prevMonthIndex = month - 2;
+    const lastPrevMonthDate = getLastDayOfMonth(year, monthIndex);
+    const prevMonthIndex = monthIndex - 1;
     for (let i = 0; i < firstWeekDayIndex - 1; i++) {
       calendarMonthDays.push(
         getDateObj(year, prevMonthIndex, lastPrevMonthDate - i)
@@ -48,25 +47,21 @@ function getMonthDays(year, month) {
     }
   }
   // month days
-  const lastMonthDay = getLastDayOfMonth(year, month);
+  const lastMonthDay = getLastDayOfMonth(year, monthIndex);
   const nexMonthDaysAmount = 35 - lastMonthDay - calendarMonthDays.length;
   for (let i = 0; i < lastMonthDay + nexMonthDaysAmount; i++) {
-    calendarMonthDays.push(getDateObj(year, month - 1, 1 + i));
+    calendarMonthDays.push(getDateObj(year, monthIndex, 1 + i));
   }
   console.log("Month days: ", calendarMonthDays);
   return calendarMonthDays;
 }
 
 function insertDates(year, month) {
-  const row_1 = document.querySelector(".calendar__row-1");
-  const row_2 = document.querySelector(".calendar__row-2");
-  const row_3 = document.querySelector(".calendar__row-3");
-  const row_4 = document.querySelector(".calendar__row-4");
-  const row_5 = document.querySelector(".calendar__row-5");
+  const datesRowElement = document.querySelector(".calendar__dates-row");
 
   function createDateElement(date) {
     const dateContainer = document.createElement("div");
-    dateContainer.classList.add('date-container');
+    dateContainer.classList.add("date-container");
     const dateBg = document.createElement("div");
     const dateValue = document.createElement("span");
     dateValue.textContent = date.date;
@@ -76,20 +71,9 @@ function insertDates(year, month) {
     return dateContainer;
   }
 
-  getMonthDays(year, month).forEach((date, idx) => {
-    row_1.appendChild(createDateElement(date));
-    // if (idx < 7) {
-    //   row_1.appendChild(createDateElement(date));
-    // }else if(idx >= 7 && idx < 14) {
-    //   row_2.appendChild(createDateElement(date));
-    // }else if(idx >= 14 && idx < 21) {
-    //   row_3.appendChild(createDateElement(date));
-    // }else if(idx >= 21 && idx < 28) {
-    //   row_4.appendChild(createDateElement(date));
-    // }else if(idx >= 28 && idx < 35) {
-    //   row_5.appendChild(createDateElement(date));
-    // }
+  getMonthDays(year, month).forEach((date) => {
+    datesRowElement.appendChild(createDateElement(date));
   });
 }
 
-insertDates(2024, 3)
+insertDates(currentYear, currentMonth);
